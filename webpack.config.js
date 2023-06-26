@@ -7,7 +7,13 @@ module.exports = {
     filename: "index.js",
   },
   module: {
-    rules: [{ test: /\.ts$/, use: "ts-loader", exclude: /node_modules/ }],
+    rules: [
+      { test: /\.ts$/, use: "ts-loader", exclude: /node_modules/ },
+      {
+        test: /\.(svg|png|jpg|jpeg)$/,
+        use: "file-loader",
+      },
+    ],
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
