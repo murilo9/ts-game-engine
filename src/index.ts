@@ -1,5 +1,7 @@
-export function main() {
-  console.log("Hello game!");
-}
+const canvas = document.createElement("canvas");
+canvas.id = "game-canvas";
+canvas.width = 800;
+canvas.height = 600;
+canvas.style.background = "#CCCCCC";
 
-main();
+document.body.appendChild(canvas);
