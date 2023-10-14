@@ -24,16 +24,27 @@ export class Game {
   }
 
   private cycle() {
+    // **** PART 1: Execute entities' beforeRun methods ****
+
     this.debugLog("cycle", this.room.getEntities());
     this.room.getEntities().forEach((entity) => {
       entity.beforeRun && entity.beforeRun();
     });
-    // **** Resolve drawable entities ****
 
     // Get context
     const ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.imageSmoothingEnabled = false;
+
+    // **** PART 2: Resolve entities' movements ****
+
+    this.room.getEntities().forEach((entity) => {
+      (entity as Entity & Drawable).x += (entity as Entity & Drawable).xSpeed;
+      (entity as Entity & Drawable).y += (entity as Entity & Drawable).ySpeed;
+    });
+
+    // **** PART 3: Resolve entities' sprites ****
+
     // Sort entities
     const sortedGraphicEntities = this.room
       .getEntities()
@@ -42,7 +53,7 @@ export class Game {
         (entityA, entityB) =>
           (entityA as Entity & Drawable).drawIndex - (entityB as Entity & Drawable).drawIndex
       );
-    // For each [sorted] entity, render it
+    // For each sorted entity, render it
     sortedGraphicEntities.forEach((entity) => {
       this.debugLog(entity);
       if ((entity as Entity & Drawable)._isGraphic) {
@@ -50,9 +61,6 @@ export class Game {
         let frame: Frame;
         let spriteSet: SpriteSet;
         let image: HTMLImageElement;
-        // Resolve movements
-        (entity as Entity & Drawable).x += (entity as Entity & Drawable).xSpeed;
-        (entity as Entity & Drawable).y += (entity as Entity & Drawable).ySpeed;
         // Render sprites
         if (sprite && (entity as Entity & Drawable).visible) {
           // Deal with static sprite
@@ -84,10 +92,19 @@ export class Game {
         }
       }
     });
-    // Execute entities' onRun methods
+
+    // **** PART 4: Resolve entities' movements ****
+
+    // TODO
+
+    // **** PART 5: Execute entities' onRun methods ****
+
     this.room.getEntities().forEach((entity) => {
       entity.onRun && entity.onRun();
     });
+
+    // **** PART 5: Execute entities' beforeRun methods ****
+
     this.room.getEntities().forEach((entity) => {
       entity.afterRun && entity.afterRun();
     });

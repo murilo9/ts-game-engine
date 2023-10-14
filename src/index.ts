@@ -22,10 +22,3 @@ const spriteSets = {
 const initialRoom = new Room([new Player()]);
 const game = new Game(initialRoom, spriteSets, DEBUG);
 game.start();
-
-// Execute all entities' beforeRun methods
-// Resolve dynamic entities (apply movements)
-// Resolve physic entities (resolve collisions)
-// Draw spatial entities (sort entities by drawIndex, and draw their respective sprites or animations)
-// Execute all entities' onRun methods
-// Execute all entities' afterRun methods
