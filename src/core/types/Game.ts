@@ -1,4 +1,5 @@
 import { Entity } from "./Entity";
+import { GameConfig } from "./GameConfig";
 import { Drawable } from "./Graphic";
 import { Room } from "./Room";
 import { Frame, SpriteSet } from "./SpriteSet";
@@ -19,15 +20,21 @@ export class Game {
 
   public static input: any;
 
-  public static setup(initialRoom: Room, spriteSets: { [name: string]: SpriteSet }, debug = false) {
+  public static setup(
+    initialRoom: Room,
+    spriteSets: { [name: string]: SpriteSet },
+    config: GameConfig,
+    debug = false
+  ) {
+    const { screenWidth, scrrenHeight, canvasElementId, canvasBackgroundColor } = config;
     this.currentRoom = initialRoom;
     this.spriteSets = spriteSets;
     this.debug = debug;
     this.canvas = document.createElement("canvas");
-    this.canvas.id = "game-canvas";
-    this.canvas.width = 800;
-    this.canvas.height = 600;
-    this.canvas.style.background = "#CCCCCC";
+    this.canvas.id = canvasElementId;
+    this.canvas.width = screenWidth;
+    this.canvas.height = scrrenHeight;
+    this.canvas.style.background = canvasBackgroundColor;
     document.body.appendChild(this.canvas);
     this.debugLog("Game constructor: room", this.currentRoom);
     this.debugLog("Game constructor: spriteSets", this.spriteSets);
