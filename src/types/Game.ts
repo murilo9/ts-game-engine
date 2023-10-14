@@ -79,6 +79,7 @@ export class Game {
             const frameName = sprite.animation.getCurrentFrameName();
             frame = spriteSet.getFrame(frameName);
           }
+          // Prepare the sprite frame to be rendered
           const sx = frame[0];
           const sy = frame[1];
           const sWidth = frame[2] - sx;
@@ -87,6 +88,7 @@ export class Game {
           const dy = y - yPivot;
           const dWidth = sWidth * xScale;
           const dHeight = sHeight * yScale;
+          // Render the frame in the canvas context
           this.debugLog(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
           ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
         }
