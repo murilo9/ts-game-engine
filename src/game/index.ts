@@ -1,8 +1,8 @@
-import { Game } from "./types/Game";
-import { Room } from "./types/Room";
-import { SpriteSet } from "./types/SpriteSet";
+import { Game } from "../core/types/Game";
+import { Room } from "../core/types/Room";
+import { SpriteSet } from "../core/types/SpriteSet";
 import mainSpriteSet from "./assets/main-spriteset.png";
-import { Player } from "./types/Player";
+import { Player } from "../core/types/Player";
 
 const DEBUG = true;
 
