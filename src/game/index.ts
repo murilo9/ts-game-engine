@@ -20,5 +20,5 @@ const spriteSets = {
   spriteSet1,
 };
 const initialRoom = new Room([new Player()]);
-const game = new Game(initialRoom, spriteSets, DEBUG);
-game.start();
+Game.setup(initialRoom, spriteSets, DEBUG);
+Game.start();

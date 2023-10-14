@@ -4,30 +4,40 @@ import { Room } from "./Room";
 import { Frame, SpriteSet } from "./SpriteSet";
 
 export class Game {
-  private canvas: HTMLCanvasElement;
-  private cycleInterval: any;
-  private debugLog = (...args: any[]) => this.debug && console.log(...args);
+  // HTML canvas element, present inside the #game-canvas element
+  private static canvas: HTMLCanvasElement;
+  // The setInterval ID of the cycle method
+  private static cycleInterval: any;
+  // Debug function, logs when this.debug is true
+  private static debugLog = (...args: any[]) => this.debug && console.log(...args);
+  // Current room being executed by the cycle method
+  private static currentRoom: Room;
+  // Collection of spriteSets
+  private static spriteSets: { [name: string]: SpriteSet };
+  // True for logging to the console
+  private static debug: boolean;
 
-  constructor(
-    private room: Room,
-    private spriteSets: { [name: string]: SpriteSet },
-    private debug = false
-  ) {
+  public static input: any;
+
+  public static setup(initialRoom: Room, spriteSets: { [name: string]: SpriteSet }, debug = false) {
+    this.currentRoom = initialRoom;
+    this.spriteSets = spriteSets;
+    this.debug = debug;
     this.canvas = document.createElement("canvas");
     this.canvas.id = "game-canvas";
     this.canvas.width = 800;
     this.canvas.height = 600;
     this.canvas.style.background = "#CCCCCC";
     document.body.appendChild(this.canvas);
-    this.debugLog("Game constructor: room", this.room);
+    this.debugLog("Game constructor: room", this.currentRoom);
     this.debugLog("Game constructor: spriteSets", this.spriteSets);
   }
 
-  private cycle() {
+  private static cycle() {
     // **** PART 1: Execute entities' beforeRun methods ****
 
-    this.debugLog("cycle", this.room.getEntities());
-    this.room.getEntities().forEach((entity) => {
+    this.debugLog("cycle", this.currentRoom.getEntities());
+    this.currentRoom.getEntities().forEach((entity) => {
       entity.beforeRun && entity.beforeRun();
     });
 
@@ -38,7 +48,7 @@ export class Game {
 
     // **** PART 2: Resolve entities' movements ****
 
-    this.room.getEntities().forEach((entity) => {
+    this.currentRoom.getEntities().forEach((entity) => {
       (entity as Entity & Drawable).x += (entity as Entity & Drawable).xSpeed;
       (entity as Entity & Drawable).y += (entity as Entity & Drawable).ySpeed;
     });
@@ -46,7 +56,7 @@ export class Game {
     // **** PART 3: Resolve entities' sprites ****
 
     // Sort entities
-    const sortedGraphicEntities = this.room
+    const sortedGraphicEntities = this.currentRoom
       .getEntities()
       .filter((entity) => (entity as Entity & Drawable)._isGraphic)
       .sort(
@@ -101,21 +111,21 @@ export class Game {
 
     // **** PART 5: Execute entities' onRun methods ****
 
-    this.room.getEntities().forEach((entity) => {
+    this.currentRoom.getEntities().forEach((entity) => {
       entity.onRun && entity.onRun();
     });
 
     // **** PART 5: Execute entities' beforeRun methods ****
 
-    this.room.getEntities().forEach((entity) => {
+    this.currentRoom.getEntities().forEach((entity) => {
       entity.afterRun && entity.afterRun();
     });
   }
 
-  public start() {
+  public static start() {
     const self = this;
     // Initialize room's entities
-    this.room.getEntities().forEach((entity) => {
+    this.currentRoom.getEntities().forEach((entity) => {
       entity.onInit();
     });
     // Try to cycle at 60 fps
@@ -124,7 +134,7 @@ export class Game {
     }, 16);
   }
 
-  public exit() {
+  public static exit() {
     clearInterval(this.cycleInterval);
   }
 }
