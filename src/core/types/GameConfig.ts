@@ -1,6 +1,6 @@
 export type GameConfig = {
   screenWidth: number;
-  scrrenHeight: number;
+  screenHeight: number;
   canvasElementId: string;
   canvasBackgroundColor: string;
 };

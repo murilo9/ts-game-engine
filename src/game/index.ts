@@ -4,12 +4,13 @@ import { SpriteSet } from "../core/types/SpriteSet";
 import mainSpriteSet from "./assets/main-spriteset.png";
 import { Player } from "./classes/Player";
 import { GameConfig } from "../core/types/GameConfig";
+import { Pillar } from "./classes/Pillar";
 
 const DEBUG = false;
 
 const gameConfig: GameConfig = {
   screenWidth: 800,
-  scrrenHeight: 600,
+  screenHeight: 600,
   canvasElementId: "game-canvas",
   canvasBackgroundColor: "#CCCCCC",
 };
@@ -22,11 +23,19 @@ const spriteSet1 = new SpriteSet(mainSpriteSet, {
   playerStep4: [192, 16, 192 + 16, 32],
   playerStep5: [208, 16, 208 + 16, 32],
   playerStep6: [224, 16, 224 + 16, 32],
+  pillar: [80, 80, 80 + 16, 80 + 16 + 16],
 });
 
 const spriteSets = {
   spriteSet1,
 };
-const initialRoom = new Room([new Player()]);
+const roomInitialEntities = [
+  new Player(),
+  new Pillar({ x: 300, y: 100 }),
+  new Pillar({ x: 500, y: 100 }),
+  new Pillar({ x: 300, y: 300 }),
+  new Pillar({ x: 500, y: 300 }),
+];
+const initialRoom = new Room(roomInitialEntities);
 Game.setup(initialRoom, spriteSets, gameConfig, DEBUG);
 Game.start();

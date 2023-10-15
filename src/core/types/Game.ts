@@ -1,3 +1,4 @@
+import { Camera } from "./Camera";
 import { Entity } from "./Entity";
 import { GameConfig } from "./GameConfig";
 import { Drawable } from "./Graphic";
@@ -19,6 +20,17 @@ export class Game {
   private static spriteSets: { [name: string]: SpriteSet };
   // True for logging to the console
   private static debug: boolean;
+  // Screen width in pixels
+  private static screenWidth: number;
+  // Screen height in pixels
+  private static screenHeight: number;
+
+  public static getScreen() {
+    return {
+      width: this.screenWidth,
+      height: this.screenHeight,
+    };
+  }
 
   public static setup(
     initialRoom: Room,
@@ -26,14 +38,14 @@ export class Game {
     config: GameConfig,
     debug = false
   ) {
-    const { screenWidth, scrrenHeight, canvasElementId, canvasBackgroundColor } = config;
+    const { screenWidth, screenHeight, canvasElementId, canvasBackgroundColor } = config;
     this.currentRoom = initialRoom;
     this.spriteSets = spriteSets;
     this.debug = debug;
     this.canvas = document.createElement("canvas");
     this.canvas.id = canvasElementId;
-    this.canvas.width = screenWidth;
-    this.canvas.height = scrrenHeight;
+    this.canvas.width = this.screenWidth = screenWidth;
+    this.canvas.height = this.screenHeight = screenHeight;
     this.canvas.style.background = canvasBackgroundColor;
     document.body.appendChild(this.canvas);
     this.debugLog("Game constructor: room", this.currentRoom);
@@ -59,6 +71,8 @@ export class Game {
       (entity as Entity & Drawable).x += (entity as Entity & Drawable).xSpeed;
       (entity as Entity & Drawable).y += (entity as Entity & Drawable).ySpeed;
     });
+    // Update camera
+    Camera.updatePosition();
 
     // **** PART 3: Resolve entities' sprites ****
 
@@ -101,8 +115,8 @@ export class Game {
           const sy = frame[1];
           const sWidth = frame[2] - sx;
           const sHeight = frame[3] - sy;
-          const dx = x - xPivot;
-          const dy = y - yPivot;
+          const dx = x - xPivot - (Camera.x - this.screenWidth / 2);
+          const dy = y - yPivot - (Camera.y - this.screenHeight / 2);
           const dWidth = sWidth * xScale;
           const dHeight = sHeight * yScale;
           // Render the frame in the canvas context
