@@ -49,7 +49,7 @@ export class Player extends Collider {
     );
     document.addEventListener("keydown", this.handleKey(false));
     document.addEventListener("keyup", this.handleKey(true));
-    //Camera.attach(this);
+    Camera.attach(this);
   }
 
   handleKey(up: boolean) {

@@ -1,3 +1,4 @@
+import { Player } from "../../game/classes/Player";
 import { Camera } from "./Camera";
 import { Collider, ColliderBody } from "./Collider";
 import { Debug } from "./Debug";
@@ -227,8 +228,8 @@ export class Game {
     });
     // Update entities' position based on collision bodies new position
     sortedColliderEntities.forEach((entity) => {
-      // entity.x = entity.body.x;
-      // entity.y = entity.body.y;
+      entity.x = entity.body.x + this.getCameraOffsetX();
+      entity.y = entity.body.y + this.getCameraOffsetY();
     });
 
     // **** PART 5: Execute entities' onRun methods ****

@@ -31,10 +31,10 @@ const spriteSets = {
 };
 const roomInitialEntities = [
   new Player(),
-  new Pillar({ x: 200, y: 200 }),
-  new Pillar({ x: 400, y: 200 }),
-  new Pillar({ x: 200, y: 400 }),
-  new Pillar({ x: 400, y: 400 }),
+  new Pillar({ x: -100, y: 100 }),
+  new Pillar({ x: -100, y: -100 }),
+  new Pillar({ x: 100, y: 100 }),
+  new Pillar({ x: 100, y: -100 }),
 ];
 const initialRoom = new Room({ environment: new System() }).appendEntities(
   roomInitialEntities,
