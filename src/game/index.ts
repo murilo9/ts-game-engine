@@ -7,10 +7,11 @@ import { GameConfig } from "../core/types/GameConfig";
 import { Pillar } from "./classes/Pillar";
 import { System } from "detect-collisions";
 import { debug } from "./debug";
+import { InitialRoomUI } from "./ui/InitialRoomUI";
 
 const gameConfig: GameConfig = {
-  screenWidth: 800,
-  screenHeight: 600,
+  screenWidth: window.innerWidth,
+  screenHeight: window.innerHeight,
   canvasElementId: "game-canvas",
   canvasBackgroundColor: "#CCCCCC",
 };
@@ -36,9 +37,10 @@ const roomInitialEntities = [
   new Pillar({ x: 100, y: 100 }),
   new Pillar({ x: 100, y: -100 }),
 ];
-const initialRoom = new Room({ environment: new System() }).appendEntities(
+const initialRoom = new Room({ environment: new System() }, new InitialRoomUI()).appendEntities(
   roomInitialEntities,
   "environment"
 );
+
 Game.setup(initialRoom, spriteSets, gameConfig, debug);
 Game.start();

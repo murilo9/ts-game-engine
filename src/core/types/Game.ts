@@ -7,6 +7,7 @@ import { GameConfig } from "./GameConfig";
 import { Drawable } from "./Graphic";
 import { Room } from "./Room";
 import { Frame, SpriteSet } from "./SpriteSet";
+import { UI } from "./UI";
 
 const CYCLES_MS = 20;
 
@@ -68,6 +69,12 @@ export class Game {
     this.debugLog("Game constructor: room", this.currentRoom);
     this.debugLog("Game constructor: spriteSets", this.spriteSets);
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+    const self = this;
+    window.addEventListener("resize", () => {
+      setTimeout(() => console.log("resizing", window.innerWidth, window.innerHeight), 200);
+      self.canvas.width = window.innerWidth;
+      self.canvas.height = window.innerHeight;
+    });
   }
 
   private static cycle() {
