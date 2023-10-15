@@ -1,6 +1,5 @@
-import { Animation } from "./Animation";
-import { Entity } from "./Entity";
-import { Drawable } from "./Graphic";
+import { Animation } from "../../core/types/Animation";
+import { Drawable } from "../../core/types/Graphic";
 
 export class Player extends Drawable {
   constructor() {

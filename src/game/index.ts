@@ -2,7 +2,7 @@ import { Game } from "../core/types/Game";
 import { Room } from "../core/types/Room";
 import { SpriteSet } from "../core/types/SpriteSet";
 import mainSpriteSet from "./assets/main-spriteset.png";
-import { Player } from "../core/types/Player";
+import { Player } from "./classes/Player";
 import { GameConfig } from "../core/types/GameConfig";
 
 const DEBUG = true;
