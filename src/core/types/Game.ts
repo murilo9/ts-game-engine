@@ -4,6 +4,8 @@ import { Drawable } from "./Graphic";
 import { Room } from "./Room";
 import { Frame, SpriteSet } from "./SpriteSet";
 
+const CYCLES_MS = 16;
+
 export class Game {
   // HTML canvas element, present inside the #game-canvas element
   private static canvas: HTMLCanvasElement;
@@ -136,7 +138,7 @@ export class Game {
     // Try to cycle at 60 fps
     this.cycleInterval = setInterval(function () {
       self.cycle();
-    }, 16);
+    }, CYCLES_MS);
   }
 
   public static exit() {

@@ -5,7 +5,7 @@ import mainSpriteSet from "./assets/main-spriteset.png";
 import { Player } from "./classes/Player";
 import { GameConfig } from "../core/types/GameConfig";
 
-const DEBUG = true;
+const DEBUG = false;
 
 const gameConfig: GameConfig = {
   screenWidth: 800,
