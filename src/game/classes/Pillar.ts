@@ -3,6 +3,8 @@ import { Collider } from "../../core/types/Collider";
 import { Drawable } from "../../core/types/Graphic";
 
 const SCALE = 2;
+const X_PIVOT = 8;
+const Y_PIVOT = 32;
 
 export class Pillar extends Collider {
   constructor({ x, y }: { x: number; y: number }) {
@@ -17,8 +19,9 @@ export class Pillar extends Collider {
         },
         xScale: SCALE,
         yScale: SCALE,
-        xPivot: 8,
-        yPivot: 24,
+        xPivot: X_PIVOT,
+        yPivot: Y_PIVOT,
+        drawIndex: y + Y_PIVOT,
       },
       new Circle({ x, y }, 8, { isStatic: true })
     );

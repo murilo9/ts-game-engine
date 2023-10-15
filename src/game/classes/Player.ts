@@ -4,13 +4,13 @@ import { Camera } from "../../core/types/Camera";
 import { Collider } from "../../core/types/Collider";
 import { AnimationSpriteConfig, Drawable } from "../../core/types/Graphic";
 
-const START_POS_X = 0;
-const START_POS_Y = 0;
+const START_POS_X = 250;
+const START_POS_Y = 250;
 const ANIMATION_TIME = 3;
 const SCALE = 2;
 const SPEED = 2;
 const X_PIVOT = 8;
-const Y_PIVOT = 14;
+const Y_PIVOT = 16;
 
 export class Player extends Collider {
   private keyPressed: { left: boolean; right: boolean; up: boolean; down: boolean } = {
@@ -49,7 +49,7 @@ export class Player extends Collider {
     );
     document.addEventListener("keydown", this.handleKey(false));
     document.addEventListener("keyup", this.handleKey(true));
-    Camera.attach(this);
+    //Camera.attach(this);
   }
 
   handleKey(up: boolean) {
@@ -88,5 +88,7 @@ export class Player extends Collider {
       sprite.animation.setRefreshTime(0);
       sprite.animation.setFrameIndex(0);
     }
+    // Update drawIndex
+    this.drawIndex = this.y + this.yPivot;
   }
 }

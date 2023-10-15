@@ -27,6 +27,13 @@ export class Game {
   // Screen height in pixels
   private static screenHeight: number;
 
+  public static getCameraOffsetX() {
+    return Camera.x - this.screenWidth / 2;
+  }
+  public static getCameraOffsetY() {
+    return Camera.y - this.screenHeight / 2;
+  }
+
   public static ctx: CanvasRenderingContext2D;
 
   public static getScreen() {
@@ -40,9 +47,11 @@ export class Game {
     initialRoom: Room,
     spriteSets: { [name: string]: SpriteSet },
     config: GameConfig,
-    debug = {
+    debug: Debug = {
       log: false,
-      drawCollisionBoxes: false,
+      displayCollisionBoxes: false,
+      displayPivots: false,
+      displayDrawIndexes: false,
     }
   ) {
     const { screenWidth, screenHeight, canvasElementId, canvasBackgroundColor } = config;
@@ -96,6 +105,7 @@ export class Game {
       let frame: Frame;
       let spriteSet: SpriteSet;
       let image: HTMLImageElement;
+
       // Render sprites
       if (sprite && entity.visible) {
         // Deal with static sprite
@@ -123,8 +133,8 @@ export class Game {
         const yAxisFlip = yScale > 0 ? 1 : -1;
         const xAxisFlipCorrection = xAxisFlip === -1 ? 2 * sWidth : 0;
         const yAxisFlipCorrection = yAxisFlip === -1 ? 2 * sHeight : 0;
-        const dx = x - xPivot - (Camera.x - this.screenWidth / 2) + xAxisFlipCorrection;
-        const dy = y - yPivot - (Camera.y - this.screenHeight / 2) + yAxisFlipCorrection;
+        const dx = x - xPivot - this.getCameraOffsetX() + xAxisFlipCorrection;
+        const dy = y - yPivot - this.getCameraOffsetY() + yAxisFlipCorrection;
         const dWidth = sWidth * Math.abs(xScale);
         const dHeight = sHeight * Math.abs(yScale);
         // Render the frame in the canvas context
@@ -141,8 +151,39 @@ export class Game {
           dWidth,
           dHeight
         );
-        //ctx.arc(100, 75, 50, 0, 2 * Math.PI);
         this.ctx.restore();
+
+        // Display entity drawIndex
+        if (this.debug.displayDrawIndexes) {
+          this.ctx.fillText(
+            Math.floor(entity.drawIndex).toString(),
+            entity.x - this.getCameraOffsetX(),
+            entity.y - dHeight + entity.yPivot - this.getCameraOffsetY()
+          );
+        }
+        // Display entity pivot
+        if (this.debug.displayPivots) {
+          this.ctx.lineWidth = 2;
+          this.ctx.strokeStyle = "red";
+          this.ctx.beginPath();
+          this.ctx.moveTo(
+            entity.x - this.getCameraOffsetX(),
+            entity.y + entity.yPivot - this.getCameraOffsetY()
+          );
+          this.ctx.lineTo(
+            entity.x + entity.xPivot - this.getCameraOffsetX(),
+            entity.y + entity.yPivot - this.getCameraOffsetY()
+          );
+          this.ctx.moveTo(
+            entity.x + entity.xPivot - this.getCameraOffsetX(),
+            entity.y - this.getCameraOffsetY()
+          );
+          this.ctx.lineTo(
+            entity.x + entity.xPivot - this.getCameraOffsetX(),
+            entity.y + entity.yPivot - this.getCameraOffsetY()
+          );
+          this.ctx.stroke();
+        }
       }
     });
 
@@ -155,8 +196,8 @@ export class Game {
     sortedColliderEntities.forEach((entity) => {
       // Update collision body position
       entity.body.setPosition(
-        entity.x - (Camera.x - this.screenWidth / 2),
-        entity.y - (Camera.y - this.screenHeight / 2),
+        entity.x - this.getCameraOffsetX(),
+        entity.y - this.getCameraOffsetY(),
         false
       );
       // Update collison body scale
@@ -177,7 +218,7 @@ export class Game {
         const { overlapV } = response;
         a.setPosition(a.x - overlapV.x, a.y - overlapV.y);
       });
-      if (this.debug.drawCollisionBoxes) {
+      if (this.debug.displayCollisionBoxes) {
         self.ctx.strokeStyle = "#00FF00";
         self.ctx.beginPath();
         system.draw(self.ctx);
@@ -186,8 +227,8 @@ export class Game {
     });
     // Update entities' position based on collision bodies new position
     sortedColliderEntities.forEach((entity) => {
-      entity.x = entity.body.x;
-      entity.y = entity.body.y;
+      // entity.x = entity.body.x;
+      // entity.y = entity.body.y;
     });
 
     // **** PART 5: Execute entities' onRun methods ****

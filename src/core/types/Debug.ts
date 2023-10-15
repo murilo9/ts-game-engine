@@ -1,4 +1,6 @@
 export type Debug = {
   log: boolean;
-  drawCollisionBoxes: boolean;
+  displayCollisionBoxes: boolean;
+  displayPivots: boolean;
+  displayDrawIndexes: boolean;
 };

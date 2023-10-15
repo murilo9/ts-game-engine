@@ -8,8 +8,6 @@ import { Pillar } from "./classes/Pillar";
 import { System } from "detect-collisions";
 import { debug } from "./debug";
 
-const DEBUG = false;
-
 const gameConfig: GameConfig = {
   screenWidth: 800,
   screenHeight: 600,
