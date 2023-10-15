@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "rm -rf ./dist && npx webpack --config webpack.config.js --mode development && cp ./public/index.html ./dist/index.html",
+    "dev": "rm -rf ./dist && mkdir ./dist && cp ./public/index.html ./dist/index.html && npx webpack --config webpack.config.js --mode development --watch",
     "build:prod": "rm -rf ./dist && npx webpack --config webpack.config.js --mode production && cp ./public/index.html ./dist/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
