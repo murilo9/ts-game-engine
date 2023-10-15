@@ -18,8 +18,6 @@ export class Game {
   // True for logging to the console
   private static debug: boolean;
 
-  public static input: any;
-
   public static setup(
     initialRoom: Room,
     spriteSets: { [name: string]: SpriteSet },
