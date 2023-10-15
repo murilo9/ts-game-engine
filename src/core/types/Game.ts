@@ -115,13 +115,30 @@ export class Game {
           const sy = frame[1];
           const sWidth = frame[2] - sx;
           const sHeight = frame[3] - sy;
-          const dx = x - xPivot - (Camera.x - this.screenWidth / 2);
-          const dy = y - yPivot - (Camera.y - this.screenHeight / 2);
-          const dWidth = sWidth * xScale;
-          const dHeight = sHeight * yScale;
+          const xAxisFlip = xScale > 0 ? 1 : -1;
+          const yAxisFlip = yScale > 0 ? 1 : -1;
+          const xAxisFlipCorrection = xAxisFlip === -1 ? 2 * sWidth : 0;
+          const yAxisFlipCorrection = yAxisFlip === -1 ? 2 * sHeight : 0;
+          const dx = x - xPivot - (Camera.x - this.screenWidth / 2) + xAxisFlipCorrection;
+          const dy = y - yPivot - (Camera.y - this.screenHeight / 2) + yAxisFlipCorrection;
+          const dWidth = sWidth * Math.abs(xScale);
+          const dHeight = sHeight * Math.abs(yScale);
           // Render the frame in the canvas context
-          this.debugLog(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-          ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+          ctx.save();
+          ctx.scale(xAxisFlip, yAxisFlip);
+          ctx.drawImage(
+            image,
+            sx,
+            sy,
+            sWidth,
+            sHeight,
+            dx * xAxisFlip,
+            dy * yAxisFlip,
+            dWidth,
+            dHeight
+          );
+          //ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+          ctx.restore();
         }
       }
     });

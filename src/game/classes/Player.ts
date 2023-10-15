@@ -54,7 +54,13 @@ export class Player extends Drawable {
 
   onRun() {
     // Move player if keys are pressed
-    this.xSpeed = (-Number(this.keyPressed.left) + Number(this.keyPressed.right)) * SPEED;
-    this.ySpeed = (-Number(this.keyPressed.up) + Number(this.keyPressed.down)) * SPEED;
+    const xModule = -Number(this.keyPressed.left) + Number(this.keyPressed.right);
+    const yModule = -Number(this.keyPressed.up) + Number(this.keyPressed.down);
+    this.xSpeed = xModule * SPEED;
+    this.ySpeed = yModule * SPEED;
+    // Update player direction based on xSpeed direction
+    if (xModule !== 0) {
+      this.xScale = xModule * SCALE;
+    }
   }
 }
