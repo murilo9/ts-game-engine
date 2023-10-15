@@ -143,7 +143,7 @@ export class Game {
       }
     });
 
-    // **** PART 4: Resolve entities' movements ****
+    // **** PART 4: Resolve entities' collisions ****
 
     // TODO
 

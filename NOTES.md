@@ -1,3 +1,7 @@
+## TODO
+
+- maybe remove onInit method on entities, as it could be used only the constructor
+
 ## Classes
 
 #### Entity

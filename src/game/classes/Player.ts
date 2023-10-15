@@ -1,10 +1,10 @@
 import { Animation } from "../../core/types/Animation";
 import { Camera } from "../../core/types/Camera";
-import { Drawable } from "../../core/types/Graphic";
+import { AnimationSpriteConfig, Drawable } from "../../core/types/Graphic";
 
 const START_POS_X = 0;
 const START_POS_Y = 0;
-const ANIMATION_SPEED = 3;
+const ANIMATION_TIME = 3;
 const SCALE = 2;
 const SPEED = 2;
 
@@ -16,20 +16,30 @@ export class Player extends Drawable {
     up: false,
   };
 
-  onInit() {
-    this.x = START_POS_X;
-    this.y = START_POS_Y;
-    this.xPivot = 8;
-    this.yPivot = 8;
-    this.sprite = {
-      type: "animation",
-      animation: new Animation(
-        "spriteSet1",
-        ["playerStep1", "playerStep2", "playerStep3", "playerStep4", "playerStep5", "playerStep6"],
-        ANIMATION_SPEED
-      ),
-    };
-    this.xScale = this.yScale = SCALE;
+  constructor() {
+    super({
+      x: START_POS_X,
+      y: START_POS_Y,
+      xPivot: 8,
+      yPivot: 8,
+      sprite: {
+        type: "animation",
+        animation: new Animation(
+          "spriteSet1",
+          [
+            "playerStep1",
+            "playerStep2",
+            "playerStep3",
+            "playerStep4",
+            "playerStep5",
+            "playerStep6",
+          ],
+          ANIMATION_TIME
+        ),
+      },
+      xScale: SCALE,
+      yScale: SCALE,
+    });
     document.addEventListener("keydown", this.handleKey(false));
     document.addEventListener("keyup", this.handleKey(true));
     Camera.attach(this);
@@ -61,6 +71,15 @@ export class Player extends Drawable {
     // Update player direction based on xSpeed direction
     if (xModule !== 0) {
       this.xScale = xModule * SCALE;
+    }
+    // Update player animation based on movement
+    const isMoving = xModule !== 0 || yModule !== 0;
+    const sprite = this.sprite as AnimationSpriteConfig;
+    if (isMoving) {
+      sprite.animation.setRefreshTime(ANIMATION_TIME);
+    } else {
+      sprite.animation.setRefreshTime(0);
+      sprite.animation.setFrameIndex(0);
     }
   }
 }

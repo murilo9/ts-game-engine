@@ -12,8 +12,16 @@ export class Animation {
     private refreshTime: number // The higher, the longer it takes to advance to next frame
   ) {}
 
+  public getRefreshTime() {
+    return this.refreshTime;
+  }
+
   public setRefreshTime(time: number) {
     this.refreshTime = time;
+  }
+
+  public setFrameIndex(index: number) {
+    this.frameIndex = index;
   }
 
   public getCurrentFrameName(): string {
@@ -22,7 +30,7 @@ export class Animation {
 
   public _countFrame() {
     this.frameCounter += 1;
-    if (this.frameCounter === this.refreshTime) {
+    if (this.frameCounter >= this.refreshTime && this.refreshTime !== 0) {
       this.frameCounter = 0;
       this.frameIndex += 1;
       if (this.frameIndex === this.framesList.length) {

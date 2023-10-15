@@ -31,10 +31,10 @@ const spriteSets = {
 };
 const roomInitialEntities = [
   new Player(),
-  new Pillar({ x: 300, y: 100 }),
-  new Pillar({ x: 500, y: 100 }),
-  new Pillar({ x: 300, y: 300 }),
-  new Pillar({ x: 500, y: 300 }),
+  new Pillar({ x: 200, y: 200 }),
+  new Pillar({ x: 400, y: 200 }),
+  new Pillar({ x: 200, y: 400 }),
+  new Pillar({ x: 400, y: 400 }),
 ];
 const initialRoom = new Room(roomInitialEntities);
 Game.setup(initialRoom, spriteSets, gameConfig, DEBUG);

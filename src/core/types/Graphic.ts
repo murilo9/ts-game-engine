@@ -1,13 +1,13 @@
 import { Animation } from "./Animation";
 import { Entity } from "./Entity";
 
-type StaticSpriteConfig = {
+export type StaticSpriteConfig = {
   type: "static";
   spriteSetName: string;
   frameName: string;
 };
 
-type AnimationSpriteConfig = {
+export type AnimationSpriteConfig = {
   type: "animation";
   animation: Animation;
 };
@@ -21,13 +21,13 @@ export class Drawable extends Entity {
   rotation: number;
   xSpeed: number;
   ySpeed: number;
-  sprite: StaticSpriteConfig | AnimationSpriteConfig | null;
+  sprite: StaticSpriteConfig | AnimationSpriteConfig;
   drawIndex: number;
   xScale: number;
   yScale: number;
   visible: boolean;
 
-  constructor(arg?: {
+  constructor(arg: {
     x?: number;
     y?: number;
     xPivot?: number;
@@ -39,6 +39,7 @@ export class Drawable extends Entity {
     xScale?: number;
     yScale?: number;
     visible?: boolean;
+    sprite: StaticSpriteConfig | AnimationSpriteConfig;
   }) {
     super();
     this._isGraphic = true;
@@ -53,6 +54,6 @@ export class Drawable extends Entity {
     this.xScale = arg?.xScale || 1;
     this.yScale = arg?.yScale || 1;
     this.visible = arg?.visible || true;
-    this.sprite = null;
+    this.sprite = arg.sprite;
   }
 }
