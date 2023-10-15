@@ -12,8 +12,22 @@ export type AnimationSpriteConfig = {
   animation: Animation;
 };
 
+export type DrawableArgs = {
+  x?: number;
+  y?: number;
+  xPivot?: number;
+  yPivot?: number;
+  rotation?: number;
+  xSpeed?: number;
+  ySpeed?: number;
+  drawIndex?: number;
+  xScale?: number;
+  yScale?: number;
+  visible?: boolean;
+  sprite: StaticSpriteConfig | AnimationSpriteConfig;
+};
+
 export class Drawable extends Entity {
-  _isGraphic: true;
   x: number;
   y: number;
   xPivot: number;
@@ -27,22 +41,8 @@ export class Drawable extends Entity {
   yScale: number;
   visible: boolean;
 
-  constructor(arg: {
-    x?: number;
-    y?: number;
-    xPivot?: number;
-    yPivot?: number;
-    rotation?: number;
-    xSpeed?: number;
-    ySpeed?: number;
-    drawIndex?: number;
-    xScale?: number;
-    yScale?: number;
-    visible?: boolean;
-    sprite: StaticSpriteConfig | AnimationSpriteConfig;
-  }) {
+  constructor(arg: DrawableArgs) {
     super();
-    this._isGraphic = true;
     this.x = arg?.x || 0;
     this.y = arg?.y || 0;
     this.xPivot = arg?.xPivot || 0;

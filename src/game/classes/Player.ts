@@ -1,5 +1,7 @@
+import { Circle, Ellipse } from "detect-collisions";
 import { Animation } from "../../core/types/Animation";
 import { Camera } from "../../core/types/Camera";
+import { Collider } from "../../core/types/Collider";
 import { AnimationSpriteConfig, Drawable } from "../../core/types/Graphic";
 
 const START_POS_X = 0;
@@ -7,8 +9,10 @@ const START_POS_Y = 0;
 const ANIMATION_TIME = 3;
 const SCALE = 2;
 const SPEED = 2;
+const X_PIVOT = 8;
+const Y_PIVOT = 14;
 
-export class Player extends Drawable {
+export class Player extends Collider {
   private keyPressed: { left: boolean; right: boolean; up: boolean; down: boolean } = {
     down: false,
     left: false,
@@ -17,29 +21,32 @@ export class Player extends Drawable {
   };
 
   constructor() {
-    super({
-      x: START_POS_X,
-      y: START_POS_Y,
-      xPivot: 8,
-      yPivot: 8,
-      sprite: {
-        type: "animation",
-        animation: new Animation(
-          "spriteSet1",
-          [
-            "playerStep1",
-            "playerStep2",
-            "playerStep3",
-            "playerStep4",
-            "playerStep5",
-            "playerStep6",
-          ],
-          ANIMATION_TIME
-        ),
+    super(
+      {
+        x: START_POS_X,
+        y: START_POS_Y,
+        xPivot: X_PIVOT,
+        yPivot: Y_PIVOT,
+        sprite: {
+          type: "animation",
+          animation: new Animation(
+            "spriteSet1",
+            [
+              "playerStep1",
+              "playerStep2",
+              "playerStep3",
+              "playerStep4",
+              "playerStep5",
+              "playerStep6",
+            ],
+            ANIMATION_TIME
+          ),
+        },
+        xScale: SCALE,
+        yScale: SCALE,
       },
-      xScale: SCALE,
-      yScale: SCALE,
-    });
+      new Ellipse({ x: START_POS_X, y: START_POS_Y }, 6, 2)
+    );
     document.addEventListener("keydown", this.handleKey(false));
     document.addEventListener("keyup", this.handleKey(true));
     Camera.attach(this);

@@ -5,6 +5,8 @@ import mainSpriteSet from "./assets/main-spriteset.png";
 import { Player } from "./classes/Player";
 import { GameConfig } from "../core/types/GameConfig";
 import { Pillar } from "./classes/Pillar";
+import { System } from "detect-collisions";
+import { debug } from "./debug";
 
 const DEBUG = false;
 
@@ -36,6 +38,9 @@ const roomInitialEntities = [
   new Pillar({ x: 200, y: 400 }),
   new Pillar({ x: 400, y: 400 }),
 ];
-const initialRoom = new Room(roomInitialEntities);
-Game.setup(initialRoom, spriteSets, gameConfig, DEBUG);
+const initialRoom = new Room({ environment: new System() }).appendEntities(
+  roomInitialEntities,
+  "environment"
+);
+Game.setup(initialRoom, spriteSets, gameConfig, debug);
 Game.start();

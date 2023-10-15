@@ -1,11 +1,13 @@
 import { Camera } from "./Camera";
+import { Collider, ColliderBody } from "./Collider";
+import { Debug } from "./Debug";
 import { Entity } from "./Entity";
 import { GameConfig } from "./GameConfig";
 import { Drawable } from "./Graphic";
 import { Room } from "./Room";
 import { Frame, SpriteSet } from "./SpriteSet";
 
-const CYCLES_MS = 16;
+const CYCLES_MS = 20;
 
 export class Game {
   // HTML canvas element, present inside the #game-canvas element
@@ -13,17 +15,19 @@ export class Game {
   // The setInterval ID of the cycle method
   private static cycleInterval: any;
   // Debug function, logs when this.debug is true
-  private static debugLog = (...args: any[]) => this.debug && console.log(...args);
+  private static debugLog = (...args: any[]) => this.debug.log && console.log(...args);
   // Current room being executed by the cycle method
   private static currentRoom: Room;
   // Collection of spriteSets
   private static spriteSets: { [name: string]: SpriteSet };
   // True for logging to the console
-  private static debug: boolean;
+  private static debug: Debug;
   // Screen width in pixels
   private static screenWidth: number;
   // Screen height in pixels
   private static screenHeight: number;
+
+  public static ctx: CanvasRenderingContext2D;
 
   public static getScreen() {
     return {
@@ -36,7 +40,10 @@ export class Game {
     initialRoom: Room,
     spriteSets: { [name: string]: SpriteSet },
     config: GameConfig,
-    debug = false
+    debug = {
+      log: false,
+      drawCollisionBoxes: false,
+    }
   ) {
     const { screenWidth, screenHeight, canvasElementId, canvasBackgroundColor } = config;
     this.currentRoom = initialRoom;
@@ -50,6 +57,7 @@ export class Game {
     document.body.appendChild(this.canvas);
     this.debugLog("Game constructor: room", this.currentRoom);
     this.debugLog("Game constructor: spriteSets", this.spriteSets);
+    this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
   }
 
   private static cycle() {
@@ -61,9 +69,8 @@ export class Game {
     });
 
     // Get context
-    const ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    ctx.imageSmoothingEnabled = false;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.imageSmoothingEnabled = false;
 
     // **** PART 2: Resolve entities' movements ****
 
@@ -77,75 +84,111 @@ export class Game {
     // **** PART 3: Resolve entities' sprites ****
 
     // Sort entities
-    const sortedGraphicEntities = this.currentRoom
+    const graphicEntities = this.currentRoom
       .getEntities()
-      .filter((entity) => (entity as Entity & Drawable)._isGraphic)
-      .sort(
-        (entityA, entityB) =>
-          (entityA as Entity & Drawable).drawIndex - (entityB as Entity & Drawable).drawIndex
-      );
+      .filter((entity) => entity instanceof Drawable) as Drawable[];
+    const sortedGraphicEntities = graphicEntities.sort(
+      (entityA, entityB) => entityA.drawIndex - entityB.drawIndex
+    );
     // For each sorted entity, render it
     sortedGraphicEntities.forEach((entity) => {
-      this.debugLog(entity);
-      if ((entity as Entity & Drawable)._isGraphic) {
-        const { sprite, x, y, xPivot, yPivot, xScale, yScale } = entity as Entity & Drawable;
-        let frame: Frame;
-        let spriteSet: SpriteSet;
-        let image: HTMLImageElement;
-        // Render sprites
-        if (sprite && (entity as Entity & Drawable).visible) {
-          // Deal with static sprite
-          if (sprite.type === "static") {
-            const { frameName, spriteSetName } = sprite;
-            spriteSet = this.spriteSets[spriteSetName];
-            image = spriteSet.getImage();
-            frame = spriteSet.getFrame(frameName);
-          }
-          // Deal with animated sprite
-          else {
-            sprite.animation._countFrame();
-            const spriteSetName = sprite.animation.spriteSetName;
-            spriteSet = this.spriteSets[spriteSetName];
-            image = spriteSet.getImage();
-            const frameName = sprite.animation.getCurrentFrameName();
-            frame = spriteSet.getFrame(frameName);
-          }
-          // Prepare the sprite frame to be rendered
-          const sx = frame[0];
-          const sy = frame[1];
-          const sWidth = frame[2] - sx;
-          const sHeight = frame[3] - sy;
-          const xAxisFlip = xScale > 0 ? 1 : -1;
-          const yAxisFlip = yScale > 0 ? 1 : -1;
-          const xAxisFlipCorrection = xAxisFlip === -1 ? 2 * sWidth : 0;
-          const yAxisFlipCorrection = yAxisFlip === -1 ? 2 * sHeight : 0;
-          const dx = x - xPivot - (Camera.x - this.screenWidth / 2) + xAxisFlipCorrection;
-          const dy = y - yPivot - (Camera.y - this.screenHeight / 2) + yAxisFlipCorrection;
-          const dWidth = sWidth * Math.abs(xScale);
-          const dHeight = sHeight * Math.abs(yScale);
-          // Render the frame in the canvas context
-          ctx.save();
-          ctx.scale(xAxisFlip, yAxisFlip);
-          ctx.drawImage(
-            image,
-            sx,
-            sy,
-            sWidth,
-            sHeight,
-            dx * xAxisFlip,
-            dy * yAxisFlip,
-            dWidth,
-            dHeight
-          );
-          //ctx.arc(100, 75, 50, 0, 2 * Math.PI);
-          ctx.restore();
+      const { sprite, x, y, xPivot, yPivot, xScale, yScale } = entity;
+      let frame: Frame;
+      let spriteSet: SpriteSet;
+      let image: HTMLImageElement;
+      // Render sprites
+      if (sprite && entity.visible) {
+        // Deal with static sprite
+        if (sprite.type === "static") {
+          const { frameName, spriteSetName } = sprite;
+          spriteSet = this.spriteSets[spriteSetName];
+          image = spriteSet.getImage();
+          frame = spriteSet.getFrame(frameName);
         }
+        // Deal with animated sprite
+        else {
+          sprite.animation._countFrame();
+          const spriteSetName = sprite.animation.spriteSetName;
+          spriteSet = this.spriteSets[spriteSetName];
+          image = spriteSet.getImage();
+          const frameName = sprite.animation.getCurrentFrameName();
+          frame = spriteSet.getFrame(frameName);
+        }
+        // Prepare the sprite frame to be rendered
+        const sx = frame[0];
+        const sy = frame[1];
+        const sWidth = frame[2] - sx;
+        const sHeight = frame[3] - sy;
+        const xAxisFlip = xScale > 0 ? 1 : -1;
+        const yAxisFlip = yScale > 0 ? 1 : -1;
+        const xAxisFlipCorrection = xAxisFlip === -1 ? 2 * sWidth : 0;
+        const yAxisFlipCorrection = yAxisFlip === -1 ? 2 * sHeight : 0;
+        const dx = x - xPivot - (Camera.x - this.screenWidth / 2) + xAxisFlipCorrection;
+        const dy = y - yPivot - (Camera.y - this.screenHeight / 2) + yAxisFlipCorrection;
+        const dWidth = sWidth * Math.abs(xScale);
+        const dHeight = sHeight * Math.abs(yScale);
+        // Render the frame in the canvas context
+        this.ctx.save();
+        this.ctx.scale(xAxisFlip, yAxisFlip);
+        this.ctx.drawImage(
+          image,
+          sx,
+          sy,
+          sWidth,
+          sHeight,
+          dx * xAxisFlip,
+          dy * yAxisFlip,
+          dWidth,
+          dHeight
+        );
+        //ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+        this.ctx.restore();
       }
     });
 
     // **** PART 4: Resolve entities' collisions ****
 
-    // TODO
+    const sortedColliderEntities = sortedGraphicEntities.filter(
+      (entity) => entity instanceof Collider
+    ) as Collider[];
+    // Apply collison bodies transformations
+    sortedColliderEntities.forEach((entity) => {
+      // Update collision body position
+      entity.body.setPosition(
+        entity.x - (Camera.x - this.screenWidth / 2),
+        entity.y - (Camera.y - this.screenHeight / 2),
+        false
+      );
+      // Update collison body scale
+      entity.body.setScale(Math.abs(entity.xScale), Math.abs(entity.yScale), false);
+      // Update collision body rotation
+      entity.body.setAngle(entity.rotation, false);
+      // Update collison body pivot
+      entity.body.offset.x = entity.xPivot;
+      entity.body.offset.y = entity.yPivot;
+      // Apply final update
+      entity.body.updateBody();
+    });
+    // Resolve collisions
+    const self = this;
+    this.currentRoom.getAllCollisionSystems().forEach((system) => {
+      system.checkAll((response) => {
+        const a = response.a as ColliderBody;
+        const { overlapV } = response;
+        a.setPosition(a.x - overlapV.x, a.y - overlapV.y);
+      });
+      if (this.debug.drawCollisionBoxes) {
+        self.ctx.strokeStyle = "#00FF00";
+        self.ctx.beginPath();
+        system.draw(self.ctx);
+        self.ctx.stroke();
+      }
+    });
+    // Update entities' position based on collision bodies new position
+    sortedColliderEntities.forEach((entity) => {
+      entity.x = entity.body.x;
+      entity.y = entity.body.y;
+    });
 
     // **** PART 5: Execute entities' onRun methods ****
 

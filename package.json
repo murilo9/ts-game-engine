@@ -21,6 +21,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "detect-collisions": "^9.2.2",
     "uuid": "^9.0.0"
   }
 }
