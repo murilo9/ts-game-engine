@@ -1,6 +1,9 @@
 ## TODO
 
-- maybe remove onInit method on entities, as it could be used only the constructor
+- Phone and desktop builds
+- Test buttons on phone touch
+- Sounds
+- SpriteSet tool
 
 ## Classes
 
