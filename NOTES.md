@@ -4,6 +4,7 @@
 - Test buttons on phone touch
 - Sounds
 - SpriteSet tool
+- Try to implement React on UI
 
 ## Classes
 
