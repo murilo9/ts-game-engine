@@ -3,6 +3,8 @@ import { Animation } from "../../core/types/Animation";
 import { Camera } from "../../core/types/Camera";
 import { Collider } from "../../core/types/Collider";
 import { AnimationSpriteConfig, Drawable } from "../../core/types/Graphic";
+import { AbilitiesTypeMap, CreatureBase } from "./CreatureBase";
+import { getCreatureModifier } from "../utils/getCreatureModifier";
 
 const START_POS_X = 250;
 const START_POS_Y = 250;
@@ -12,7 +14,15 @@ const SPEED = 2;
 const X_PIVOT = 8;
 const Y_PIVOT = 16;
 
-export class PlayerChar extends Collider {
+export class Player extends Collider implements CreatureBase {
+  /* Interface-related Attributes */
+  _isCreatureBase: true = true;
+  private xp = 0;
+  private level = 1;
+  private HP: number;
+  private MP: number;
+
+  /* Movement Attributes */
   private keyPressed: { left: boolean; right: boolean; up: boolean; down: boolean } = {
     down: false,
     left: false,
@@ -20,7 +30,16 @@ export class PlayerChar extends Collider {
     up: false,
   };
 
-  constructor() {
+  constructor(
+    private strength: number,
+    private dexterity: number,
+    private constitution: number,
+    private intelligence: number,
+    private charisma: number,
+    private hpDiceSize: number,
+    private mpDiceSize: number
+  ) {
+    // Movement initializers
     super(
       {
         x: START_POS_X,
@@ -50,6 +69,38 @@ export class PlayerChar extends Collider {
     document.addEventListener("keydown", this.handleKey(false));
     document.addEventListener("keyup", this.handleKey(true));
     Camera.attach(this);
+    // CreatureBase initialziers (attributes)
+    this.xp = 0;
+    this.HP = this.getMaxHP();
+    this.MP = this.getMaxMP();
+  }
+
+  getAbility(ability: AbilitiesTypeMap): number {
+    return this[ability];
+  }
+  getHP(): number {
+    return this.HP;
+  }
+  getMaxHP(): number {
+    return this.level * this.hpDiceSize;
+  }
+  getMP(): number {
+    return this.MP;
+  }
+  getMaxMP(): number {
+    const intMod = getCreatureModifier(this, "intelligence");
+    const nonZeroIntMod = intMod >= 0 ? intMod : 0;
+    return this.level * (this.mpDiceSize + nonZeroIntMod * 2);
+  }
+  getXpToNextlevel(currentLevel: number): number {
+    if (currentLevel === 1) {
+      return 1000;
+    } else {
+      return this.getXpToNextlevel(currentLevel - 1) + 1000;
+    }
+  }
+  addXp(amount: number) {
+    this.xp += amount;
   }
 
   handleKey(up: boolean) {

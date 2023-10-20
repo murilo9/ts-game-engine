@@ -3,9 +3,8 @@
 - Strenght: defines carry capacity, melee hit chance and melee damage
 - Dexterity: defines armor class, walk speed and ranged hit chance
 - Constitution: defines max HP
-- Intelligence: defines max learned spells levels and MP recover speed
-- Wisdom: defines max MP and spells dificulty class
-- Charisma: defines prices and some interactions' success chance
+- Intelligence: defines max MP and spells dificulty class
+- Charisma: defines prices and some interactions' success chance, and MP recover speed
 
 ## NPCs
 

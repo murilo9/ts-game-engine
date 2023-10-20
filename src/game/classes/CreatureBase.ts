@@ -3,28 +3,11 @@ export type AbilitiesTypeMap =
   | "dexterity"
   | "constitution"
   | "intelligence"
-  | "wisdom"
   | "charisma";
-export type CreateBaseTypeMap = AbilitiesTypeMap | "HP" | "maxHP";
 
-export class CreatureBase {
-  constructor(
-    private strength: number,
-    private dexterity: number,
-    private constitution: number,
-    private intelligence: number,
-    private wisdom: number,
-    private charisma: number,
-    private HP: number,
-    private maxHP: number
-  ) {}
-
-  public get(attr: CreateBaseTypeMap) {
-    return this[attr];
-  }
-
-  public getModifier(ability: AbilitiesTypeMap) {
-    const abilityValue = this[ability];
-    return Math.ceil((abilityValue - 10) / 2);
-  }
+export interface CreatureBase {
+  _isCreatureBase: true;
+  getAbility(ability: AbilitiesTypeMap): number;
+  getHP(): number;
+  getMaxHP(): number;
 }
