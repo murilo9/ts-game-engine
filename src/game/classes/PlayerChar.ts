@@ -12,7 +12,7 @@ const SPEED = 2;
 const X_PIVOT = 8;
 const Y_PIVOT = 16;
 
-export class Player extends Collider {
+export class PlayerChar extends Collider {
   private keyPressed: { left: boolean; right: boolean; up: boolean; down: boolean } = {
     down: false,
     left: false,

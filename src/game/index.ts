@@ -2,7 +2,7 @@ import { Game } from "../core/types/Game";
 import { Room } from "../core/types/Room";
 import { SpriteSet } from "../core/types/SpriteSet";
 import mainSpriteSet from "./assets/main-spriteset.png";
-import { Player } from "./classes/Player";
+import { PlayerChar } from "./classes/PlayerChar";
 import { GameConfig } from "../core/types/GameConfig";
 import { Pillar } from "./classes/Pillar";
 import { System } from "detect-collisions";
@@ -31,7 +31,7 @@ const spriteSets = {
   spriteSet1,
 };
 const roomInitialEntities = [
-  new Player(),
+  new PlayerChar(),
   new Pillar({ x: -100, y: 100 }),
   new Pillar({ x: -100, y: -100 }),
   new Pillar({ x: 100, y: 100 }),

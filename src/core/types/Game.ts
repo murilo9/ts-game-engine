@@ -1,4 +1,4 @@
-import { Player } from "../../game/classes/Player";
+import { Player } from "../../game/classes/PlayerChar";
 import { Camera } from "./Camera";
 import { Collider, ColliderBody } from "./Collider";
 import { Debug } from "./Debug";
