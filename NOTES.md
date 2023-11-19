@@ -70,6 +70,33 @@ Each game cycle will:
 1. Execute all entities' beforeRun methods
 2. Resolve dynamic entities (apply movements)
 3. Draw graphic entities (sort entities by drawIndex, and draw their respective sprites or animations)
-4. [NOT IMPLEMENTED YET] Resolve physic entities (resolve collisions)
+4. Resolve physic entities (resolve collisions)
 5. Execute all entities' onRun methods
 6. Execute all entities' afterRun methods
+
+### How does UI work
+
+Every Room has a public UI instance, which is defined in the Room's constructor. To build the UI of a Room, create a MyRoomUI class that extends the UI class. Inside MyRoomUI class init method, get the element instance, append any HTMLElement(s) into it (through the appendChild method) and call the setElement method:
+
+```js
+const myButton = document.createElement("button");
+myButton.innerHTML = "My Button";
+myButton.onclick = () => {
+  console.log("clicked myButton");
+};
+const myHeader = document.createElement("h1");
+myHeader.innerHTML = "My Header";
+myHeader.style.color = "green";
+
+export class MyRoomUI extends UI {
+  public init(): void {
+    const updatedUiElement = this.getElement();
+    updatedUiElement.appendChild(myButton);
+    updatedUiElement.appendChild(myHeader);
+    // Finally, update the UI element
+    this.setElement(updatedUiElement);
+  }
+}
+```
+
+Once MyRoom inits, it will render the contents of its UI.

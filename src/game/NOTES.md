@@ -32,3 +32,11 @@
 - Collected taxes amount depends on how people like you
 - Giving gifts can increase people's likelihood
 - Likelihood of people is influenced by their rooms' furniture
+
+## Spells
+
+- Mark/Teleport
+- Super Speed
+- Super Health
+- Green Finger
+- Supernova
